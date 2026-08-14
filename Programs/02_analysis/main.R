@@ -49,7 +49,67 @@ source(
   )
 )
 
+message("\n--------------------------------------------")
+message("CREATING TABLE 1: DATA SOURCES")
+message("--------------------------------------------")
 
+source(
+  file.path(
+    ANALYSIS_DIR,
+    "Table01_Data_Sources.R"
+  )
+)
+
+message("\n--------------------------------------------")
+message("CREATING TABLE 2: SUMMARY STATISTICS")
+message("--------------------------------------------")
+
+source(
+  file.path(
+    ANALYSIS_DIR,
+    "Table02_Summary_Statistics.R"
+  )
+)
+message("\n--------------------------------------------")
+message("CREATING TABLE 3: EVENT STACKS")
+message("--------------------------------------------")
+
+source(
+  file.path(
+    ANALYSIS_DIR,
+    "Table03_Event_Stacks.R"
+  )
+)
+message("\n--------------------------------------------")
+message("CREATING TABLE 4: PARAMETERS AND DEFINITIONS")
+message("--------------------------------------------")
+
+source(
+  file.path(
+    ANALYSIS_DIR,
+    "Table04_Parameters_Definitions.R"
+  )
+)
+message("\n--------------------------------------------")
+message("CREATING TABLE 5: MAIN REGRESSION RESULTS")
+message("--------------------------------------------")
+
+source(
+  file.path(
+    ANALYSIS_DIR,
+    "Table05_Main_Results.R"
+  )
+)
+message("\n--------------------------------------------")
+message("CREATING MAIN-PAPER FIGURES 1-4")
+message("--------------------------------------------")
+
+source(
+  file.path(
+    ANALYSIS_DIR,
+    "Figures01_04_Main_Paper.R"
+  )
+)
 message("\n--------------------------------------------")
 message("MAIN ANALYSIS MODEL STAGE COMPLETED")
 message("--------------------------------------------")
