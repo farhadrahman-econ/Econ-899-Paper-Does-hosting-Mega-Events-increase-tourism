@@ -1,0 +1,342 @@
+Replication Package
+
+Do the Summer Olympics and FIFA World Cup Increase International Tourist Arrivals, and Does the Effect Differ Between High- and Upper-Middle-Income Hosts?
+
+Author: Md Farhad Rahman
+Course: ECON 899, Simon Fraser University
+Date: August 2026
+
+Overview
+
+This repository contains the data and R code used to reproduce the empirical results in the paper Do the Summer Olympics and FIFA World Cup Increase International Tourist Arrivals, and Does the Effect Differ Between High- and Upper-Middle-Income Hosts?
+
+The analysis uses an event-specific stacked difference-in-differences design covering five Summer Olympics and six FIFA World Cups held between 1996 and 2018. The package reconstructs the country-year data, creates the event stacks and analysis samples, estimates the main and robustness specifications, and generates the tables and figures reported in the paper and appendix.
+
+The package is designed so that, after the one-time setup and configuration steps, the complete empirical analysis can be reproduced by running a single program:
+
+Programs/01_main.R
+
+Generated cleaned datasets and results are intentionally not stored in the Git repository. They are recreated by the replication code.
+
+Data Availability and Provenance
+
+World Bank World Development Indicators
+
+The tourism and macroeconomic variables come from the World Bank World Development Indicators (WDI). The exact source-data snapshot used for the submitted paper is included in:
+
+Data/raw_data/world_bank_wdi_1995_2020.csv
+
+The raw panel covers 27 countries from 1995 through 2020.
+
+The main indicators used in the empirical analysis are:
+
+Variable
+
+WDI indicator
+
+International tourist arrivals
+
+ST.INT.ARVL
+
+GDP per capita, constant 2015 US$
+
+NY.GDP.PCAP.KD
+
+GDP growth, annual %
+
+NY.GDP.MKTP.KD.ZG
+
+Real effective exchange rate
+
+PX.REX.REER
+
+Population (SP.POP.TOTL) is also downloaded as part of the raw WDI extract.
+
+Programs/00_setup.R uses the R package WDI to obtain the source data if the raw WDI file is absent. Because source databases can be revised over time, the committed raw-data snapshot is the preferred input for reproducing the submitted paper.
+
+Mega-event design
+
+The empirical design contains 11 event-specific stacks: five Summer Olympics and six FIFA World Cups held between 1996 and 2018.
+
+The winning hosts, event years, announcement years, event types, income-group classifications, and event-specific comparison countries are defined in:
+
+Programs/01_dataprep/02_event_information.R
+
+Event histories were compiled from International Olympic Committee candidature materials and FIFA host-selection records, as documented in the paper. The comparison-country lists should be interpreted as the analysis comparison groups used in this project rather than as a complete historical catalogue of every official candidate city or country.
+
+China, South Africa, Brazil, and Russia are coded as upper-middle-income host stacks. The remaining seven event stacks are coded as high-income host stacks. This classification is fixed at the event-stack level for the heterogeneity analysis.
+
+No confidential or restricted-access data are used in this project.
+
+Software and Computational Requirements
+
+The replication package is written in R.
+
+It was successfully tested using:
+
+R 4.5.1 on Windows
+
+tidyverse
+
+fixest
+
+WDI
+
+Programs/00_setup.R checks for the required packages and installs missing packages.
+
+The analysis is designed to run on a standard personal computer. Appendix Table A3 is the most computationally intensive part because it repeatedly re-estimates models for the delete-country CV3 jackknife.
+
+There are no randomized simulations or bootstrap procedures requiring a random seed.
+
+Repository Structure
+
+.
+├── Data/
+│   ├── README.md
+│   ├── raw_data/
+│   │   ├── README.md
+│   │   └── world_bank_wdi_1995_2020.csv
+│   └── data_for_analysis/
+│       └── README.md
+│
+├── Programs/
+│   ├── README.md
+│   ├── 00_setup.R
+│   ├── config.R
+│   ├── 01_main.R
+│   │
+│   ├── 01_dataprep/
+│   │   ├── README.md
+│   │   ├── main.R
+│   │   ├── 01_prepare_wdi_data.R
+│   │   ├── 02_event_information.R
+│   │   ├── 03_create_event_stacks.R
+│   │   └── 04_create_analysis_samples.R
+│   │
+│   ├── 02_analysis/
+│   │   ├── README.md
+│   │   ├── main.R
+│   │   ├── 00_models.R
+│   │   ├── Table01_Data_Sources.R
+│   │   ├── Table02_Summary_Statistics.R
+│   │   ├── Table03_Event_Stacks.R
+│   │   ├── Table04_Parameters_Definitions.R
+│   │   ├── Table05_Main_Results.R
+│   │   └── Figures01_04_Main_Paper.R
+│   │
+│   └── 03_appendix/
+│       ├── README.md
+│       ├── main.R
+│       ├── Appendix_Tables_A1_A5.R
+│       └── FigureA01_PreTreatment_Trend_Gaps.R
+│
+├── Results/
+│   └── README.md
+│
+└── .gitignore
+
+Folder roles
+
+Data/raw_data/ contains the original source-data snapshot.
+
+Data/data_for_analysis/ contains cleaned datasets generated by the data-preparation code.
+
+Programs/01_dataprep/ reconstructs the analysis datasets from the raw inputs.
+
+Programs/02_analysis/ generates the main-paper tables and figures.
+
+Programs/03_appendix/ generates the appendix tables and figure.
+
+Results/ receives all generated empirical outputs.
+
+The generated files in Data/data_for_analysis/ and Results/ are excluded from version control through .gitignore because they are reproduced by the code.
+
+Instructions for Replicators
+
+Step 1: Clone or download the repository
+
+Place the complete repository in a local directory.
+
+Step 2: Edit the project path
+
+Open:
+
+Programs/config.R
+
+Set PROJECT_ROOT to the local location of the repository.
+
+This is the only replication program that should normally require user-specific editing.
+
+For example:
+
+PROJECT_ROOT <- normalizePath(
+  "C:/path/to/Econ-899-Paper-Does-hosting-Mega-Events-increase-tourism",
+  winslash = "/",
+  mustWork = TRUE
+)
+
+Step 3: Run the one-time setup
+
+Start R or RStudio, set the working directory to Programs, and run:
+
+source("00_setup.R")
+
+This checks/installs required R packages and ensures that the source-data input is available.
+
+Step 4: Run the complete replication
+
+From the Programs directory, run:
+
+source("01_main.R")
+
+No other program needs to be run manually.
+
+01_main.R executes the package in the following order:
+
+data preparation;
+
+main-paper analysis;
+
+appendix analysis.
+
+A successful run ends with:
+
+ECON 899 REPLICATION COMPLETED SUCCESSFULLY
+
+Data-Preparation Programs
+
+01_prepare_wdi_data.R
+
+Reads the raw World Bank WDI file, checks the country-year structure and missing values, constructs the variables required for the analysis, and saves the cleaned country panel.
+
+02_event_information.R
+
+Defines the event years, announcement years, hosts, comparison countries, event types, and host-income groups for the 11 event stacks.
+
+03_create_event_stacks.R
+
+Combines the country panel with the event information and creates the event-specific stacked dataset.
+
+04_create_analysis_samples.R
+
+Constructs the baseline, restricted, clean-control, strict-balanced, no-2020, and no-Russia analysis samples used throughout the paper.
+
+Main Analysis Programs
+
+00_models.R
+
+Estimates the core pooled and host-income interaction models used by the main analysis and appendix programs.
+
+Table01_Data_Sources.R
+
+Creates a supporting summary of the main WDI indicators used in the project. This is a replication-package documentation table and is not a numbered table in the submitted paper.
+
+Table02_Summary_Statistics.R
+
+Reproduces Table 1: Summary Statistics: Main Estimation Sample.
+
+Table03_Event_Stacks.R
+
+Reproduces Table 2: Event Stacks and Analysis Comparison Groups.
+
+Table04_Parameters_Definitions.R
+
+Reproduces Table 3: Parameters and Definitions for the Empirical Model.
+
+Table05_Main_Results.R
+
+Reproduces Table 4: Mega-Event Hosting and International Tourist Arrivals.
+
+Figures01_04_Main_Paper.R
+
+Reproduces:
+
+Figure 1: Winning Hosts and Event-Specific Comparison Countries Around the Event
+
+Figure 2: Dynamic Effect of Hosting on International Tourist Arrivals
+
+Figure 3: Hosting Effects by Host Income Group
+
+Figure 4: Robustness of the Average Hosting Effect
+
+Appendix Programs
+
+Appendix_Tables_A1_A5.R
+
+Reproduces:
+
+Table A1: Robustness of the Average Hosting Effect
+
+Table A2: Dynamic Event-Study Estimates and Pre-Treatment Tests
+
+Table A3: Finite-Cluster Inference
+
+Table A4: Event-Specific Estimates
+
+Table A5: Exploratory Extensions
+
+FigureA01_PreTreatment_Trend_Gaps.R
+
+Reproduces Figure A1: Pre-Treatment Tourism-Trend Differences Between Winning Hosts and Event-Specific Comparison Countries.
+
+The script also writes a CSV containing the seven event-specific values plotted in Figure A1.
+
+Generated Outputs
+
+After a successful run, the Results/ folder contains:
+
+Table01_Data_Sources.csv
+Table02_Summary_Statistics.csv
+Table03_Event_Stacks.csv
+Table04_Parameters_Definitions.csv
+Table05_Main_Results.csv
+
+Figure01_Hosts_vs_Comparison_Countries.png
+Figure02_Dynamic_Event_Study.png
+Figure03_Income_Group_Heterogeneity.png
+Figure04_Robustness_Pooled_Effect.png
+
+TableA01_Robustness.csv
+TableA02_Dynamic_Event_Study.csv
+TableA03_Finite_Cluster_Inference.csv
+TableA04_Event_Specific_Estimates.csv
+TableA05_Exploratory_Extensions.csv
+
+FigureA01_PreTreatment_Trend_Gaps.png
+FigureA01_PreTreatment_Trend_Gaps_Data.csv
+
+The cleaned intermediate datasets are written to Data/data_for_analysis/.
+
+Reproducibility Checks
+
+The programs contain explicit checks for important sample sizes and key empirical results. These checks are intended to stop the program or issue a warning if reconstructed data or estimates differ materially from the submitted analysis.
+
+The complete package was tested from a fresh R session. The test reconstructed the cleaned data from the raw WDI input and successfully generated all main-paper and appendix tables and figures from Programs/01_main.R.
+
+Key reconstructed sample sizes include:
+
+baseline complete-case sample before fixed-effect singleton removal: 1,085 observations;
+
+preferred baseline regression: 1,084 observations after singleton removal;
+
+restricted clean-control sample: 400 observations;
+
+strict-balanced clean-control sample: 253 observations.
+
+Notes on Interpretation
+
+The event-specific comparison groups in this replication package are the groups actually used in the empirical design. They should not be interpreted as a complete historical list of all official Olympic or FIFA bidding countries.
+
+The generated results are computational outputs. Formatting in the submitted paper may differ slightly from the CSV files because the paper rounds displayed coefficients and standard errors.
+
+For example, the restricted-sample implied upper-middle-income standard error is computed as approximately 0.146619 and displayed as 0.1470 in the paper.
+
+References for Data Provenance
+
+World Bank. (2026). World Development Indicators. Indicators used include international tourist arrivals (ST.INT.ARVL), GDP per capita in constant 2015 US dollars (NY.GDP.PCAP.KD), GDP growth (NY.GDP.MKTP.KD.ZG), and the real effective exchange rate (PX.REX.REER).
+
+International Olympic Committee. (2026). Olympic candidature and host-selection materials used to document Summer Olympic event histories.
+
+FIFA. (2026). FIFA World Cup host-selection materials used to document World Cup event histories.
+
+The full bibliographic references used in the research paper are reported in the paper itself.
